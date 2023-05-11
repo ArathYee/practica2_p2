@@ -1,0 +1,110 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class GuessWho {
+
+    private static final List<Character> CHARACTERS = new ArrayList<>();
+
+    static {
+        CHARACTERS.add("Arath");
+        CHARACTERS.add("Bryan");
+        CHARACTERS.add("Victor");
+        CHARACTERS.add("Mauricio");
+        CHARACTERS.add("Julia");
+        CHARACTERS.add("Fernando");
+        CHARACTERS.add("Jacoppo");
+        CHARACTERS.add("Henry");
+        CHARACTERS.add("Eduardo");
+        CHARACTERS.add("Felipe");
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        
+        int computerCharacterIndex = (int) (Math.random() * CHARACTERS.size());
+        String computerCharacter = CHARACTERS.get(computerCharacterIndex);
+
+        
+        List<Character> userCharacters = new ArrayList<>(CHARACTERS);
+        userCharacters.remove(computerCharacter);
+
+        
+        while (true) {
+
+            System.out.println("Adivina el personaje: ");
+            String userGuess = scanner.nextLine();
+
+            
+            if (userGuess.equals(computerCharacter)) {
+                System.out.println("Adivinaste correctamente!");
+                break;
+            }
+
+            
+            System.out.println("Tu personaje es masculino o femenino? ");
+            String userGender = scanner.nextLine();
+
+            
+            if (userGender.equals("masculino")) {
+                userCharacters.removeIf(character -> character.startsWith("F"));
+            } else {
+                userCharacters.removeIf(character -> character.startsWith("M"));
+            }
+
+            
+            if (userCharacters.isEmpty()) {
+                System.out.println("Perdiste");
+                break;
+            }
+
+            
+            long startTime = System.currentTimeMillis();
+            while (System.currentTimeMillis() - startTime < 30000) {
+                
+                System.out.println("El personaje es " + getRandomAttribute() + "? ");
+                String userAttribute = scanner.nextLine();
+
+                
+                boolean isCorrect = false;
+                for (Character character : userCharacters) {
+                    if (character.get(getRandomAttribute()).equals(userAttribute)) {
+                        isCorrect = true;
+                        break;
+                    }
+                }
+
+                
+                if (isCorrect) {
+                    userCharacters.remove(character);
+                }
+
+               
+                if (userCharacters.isEmpty()) {
+                    System.out.println("Ganaste!");
+                    break;
+                }
+            }
+
+            
+            if (System.currentTimeMillis() - startTime >= 30000) {
+                System.out.println("Perdiste!");
+                break;
+            }
+        }
+    }
+
+    private static String getRandomAttribute() {
+        List<String> attributes = new ArrayList<>();
+        attributes.add("color cabello");
+        attributes.add("color ojos");
+        attributes.add("edad");
+        attributes.add("peinado");
+        attributes.add("barba");
+        attributes.add("vestimenta");
+        attributes.add("accessorios");
+
+        return attributes.get((int) (Math.random() * attributes.size()));
+    }
+}
